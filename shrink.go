@@ -13,7 +13,7 @@ type Option struct {
 	Saturation    		float64
 	ForegroundNum 		int
 	Shift         		int
-	KMeansIterations    int
+	KMeansIterations	int
 }
 
 func init() {
@@ -22,7 +22,7 @@ func init() {
 
 func DefaultOption() *Option {
 	return &Option{
-		SamplingRate:     0.002,
+		SamplingRate:     0.050,
 		Brightness:       0.300,
 		Saturation:       0.200,
 		Shift:            2,
@@ -72,7 +72,7 @@ func Shrink(img image.Image, op *Option) (image.Image, error) {
 }
 
 func apply(data Pixels, bg *Pixel, labels Pixels, op *Option) (Pixels, error) {
-	flag, err := getForegraundMask(data, bg, op)
+	flag, err := getForegroundMask(data, bg, op)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func createPalette(p Pixels, op *Option) (*Pixel, Pixels, error) {
 		return nil, nil, err
 	}
 
-	mask, err := getForegraundMask(p, bg, op)
+	mask, err := getForegroundMask(p, bg, op)
 	if err != nil {
 		return bg, nil, err
 	}
@@ -134,7 +134,7 @@ func createSample(p Pixels, num int) (Pixels, error) {
 	return samples, nil
 }
 
-func getForegraundMask(p Pixels, bg *Pixel, op *Option) ([]bool, error) {
+func getForegroundMask(p Pixels, bg *Pixel, op *Option) ([]bool, error) {
 	rtn := make([]bool, len(p))
 	for idx, pix := range p {
 		_, ds, dv := pix.DistanceHSV(bg)
